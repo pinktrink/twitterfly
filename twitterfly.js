@@ -5,6 +5,7 @@
 				hide_replies : true,
 				link_hashtags : true,
 				link_handles : true,
+				link_links : false,
 				hide_retweets : false
 			},
 			defaults = {
@@ -88,8 +89,10 @@
 								}
 							}
 
-							for(m = 0, n = tweets[k].entities.urls.length; m < n; m++){
-								preouthtml = preouthtml.replace(new RegExp(tweets[k].entities.urls[m].url, "g"), '<a class=\"' + opts.link_class + '\" href=\"' + tweets[k].entities.urls[m].expanded_url + '\" ' + (opts.link_new ? 'target="_blank" ' : "") + ">" + tweets[k].entities.urls[m].display_url + "</a>");
+							if(tweets[k].opts.link_links){
+								for(m = 0, n = tweets[k].entities.urls.length; m < n; m++){
+									preouthtml = preouthtml.replace(new RegExp(tweets[k].entities.urls[m].url, "g"), '<a class=\"' + opts.link_class + '\" href=\"' + tweets[k].entities.urls[m].expanded_url + '\" ' + (opts.link_new ? 'target="_blank" ' : "") + ">" + tweets[k].entities.urls[m].display_url + "</a>");
+								}
 							}
 
 							outhtml += preouthtml.replace(placeholders.handle, "@" + tweets[k].opts.handle.replace("@", ""));
