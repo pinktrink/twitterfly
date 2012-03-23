@@ -22,7 +22,8 @@
 				image : /\{\{IMAGE\}\}/g,
 				tweet : /\{\{TWEET\}\}/g,
 				time : /\{\{TIME\}\}/g,
-				handle : /\{\{HANDLE\}\}/g
+				handle : /\{\{HANDLE\}\}/g,
+				tweet_id : /\{\{TWEETID\}\}/g
 			},
 			tweets = [],
 			preouthtml = "",
@@ -75,7 +76,7 @@
 						for(var k = 0, l = opts.max; k < l; k++){
 							date = new Date(tweets[k].created_at);
 
-							preouthtml = opts.tweet_html.replace(placeholders.time, days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear()).replace(placeholders.image, tweets[k].user.profile_image_url).replace(placeholders.tweet, tweets[k].text);
+							preouthtml = opts.tweet_html.replace(placeholders.tweet_id, tweets[k].id).replace(placeholders.time, days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear()).replace(placeholders.image, tweets[k].user.profile_image_url).replace(placeholders.tweet, tweets[k].text);
 
 							if(tweets[k].opts.link_hashtags){
 								for(var m = 0, n = tweets[k].entities.hashtags.length; m < n; m++){
