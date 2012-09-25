@@ -61,11 +61,16 @@
 						case "@":
 							return "https://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=" + (opts.feeds[i].hide_retweets ? "false" : "true") + "&exclude_replies=" + (opts.feeds[i].hide_replies ? "true" : "false") + "&screen_name=" + opts.feeds[i].handle.replace('@', '') + "&count=" + (opts.max * 2) + "&callback=?";
 						case "#":
-							return "http://search.twitter.com/search.json?q=" + opts.feeds[i];
+							return "http://search.twitter.com/search.json?q=" + encodeURIComponent(opts.feeds[i].handle) + "&callback=?";
 					}
 				})();
 				
 				$.getJSON(query, function(data){
+					var pref = opts.feeds[o].handle.substr(0, 1);
+					if(pref === "#"){
+						data = data.results;
+					}
+					
 					for(var k = 0, l = data.length; k < l; k++){
 						if(data[k].entities.urls.length && opts.feeds[o].hide_linked_tweets){
 							continue;
@@ -88,19 +93,21 @@
 
 							if(tweets[k].opts.link_hashtags){
 								for(var m = 0, n = tweets[k].entities.hashtags.length; m < n; m++){
-									preouthtml = preouthtml.replace(new RegExp("#" + tweets[k].entities.hashtags[m].text, "g"), '<a class=\"' + opts.hashtag_class + '\" href=\"http://twitter.com/#!/search/%23' + tweets[k].entities.hashtags[m].text + '\" ' + (opts.hashtag_new ? 'target="_blank" ' : "") + ">#" + tweets[k].entities.hashtags[m].text + "</a>");
+									preouthtml = preouthtml.replace(new RegExp("#" + tweets[k].entities.hashtags[m].text, "g"), '<a class="' + opts.hashtag_class + '" href="http://twitter.com/#!/search/%23' + tweets[k].entities.hashtags[m].text + '" ' + (opts.hashtag_new ? 'target="_blank" ' : "") + ">#" + tweets[k].entities.hashtags[m].text + "</a>");
 								}
 							}
 
 							if(tweets[k].opts.link_handles){
 								for(m = 0, n = tweets[k].entities.user_mentions.length; m < n; m++){
-									preouthtml = preouthtml.replace(new RegExp("@" + tweets[k].entities.user_mentions[m].screen_name, "g"), '<a class=\"' + opts.handle_class + '\" href=\"http://twitter.com/#!/' + tweets[k].entities.user_mentions[m].screen_name + '\" ' + (opts.handle_new ? 'target="_blank" ' : "") + "/>@" + tweets[k].entities.user_mentions[m].screen_name + "</a>");
+									preouthtml = preouthtml.replace(new RegExp("@" + tweets[k].entities.user_mentions[m].screen_name, "g"), '<a class="' + opts.handle_class + '" href="http://twitter.com/#!/' + tweets[k].entities.user_mentions[m].screen_name + '" ' + (opts.handle_new ? 'target="_blank" ' : "") + "/>@" + tweets[k].entities.user_mentions[m].screen_name + "</a>");
 								}
 							}
-
-							if(tweets[k].opts.link_links){
-								for(m = 0, n = tweets[k].entities.urls.length; m < n; m++){
-									preouthtml = preouthtml.replace(new RegExp(tweets[k].entities.urls[m].url, "g"), '<a class=\"' + opts.link_class + '\" href=\"' + tweets[k].entities.urls[m].expanded_url + '\" ' + (opts.link_new ? 'target="_blank" ' : "") + ">" + tweets[k].entities.urls[m].display_url + "</a>");
+							
+							if(pref === "#"){
+								if(tweets[k].opts.link_links){
+									for(m = 0, n = tweets[k].entities.urls.length; m < n; m++){
+										preouthtml = preouthtml.replace(new RegExp(tweets[k].entities.urls[m].url, "g"), '<a class="' + opts.link_class + '" href="' + tweets[k].entities.urls[m].expanded_url + '" ' + (opts.link_new ? 'target="_blank" ' : "") + ">" + tweets[k].entities.urls[m].display_url + "</a>");
+									}
 								}
 							}
 
