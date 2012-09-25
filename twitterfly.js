@@ -55,7 +55,7 @@
 			}
 
 			(function(o){
-				var prefix = opts.feeds[i].substr(0, 1),
+				var prefix = opts.feeds[i].handle.substr(0, 1),
 				query = (function(){
 					switch(prefix){
 						case "@":
