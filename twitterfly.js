@@ -54,9 +54,7 @@
 				$.error("Feed " + i + " has no handle, skipping.");
 			}
 
-			(function(){
-				var o = i;
-
+			(function(o){
 				$.getJSON("https://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=" + (opts.feeds[i].hide_retweets ? "false" : "true") + "&exclude_replies=" + (opts.feeds[i].hide_replies ? "true" : "false") + "&screen_name=" + opts.feeds[i].handle.replace('@', '') + "&count=" + (opts.max * 2) + "&callback=?", function(data){
 					for(var k = 0, l = data.length; k < l; k++){
 						if(data[k].entities.urls.length && opts.feeds[o].hide_linked_tweets){
@@ -102,7 +100,7 @@
 						self.html(outhtml);
 					}
 				});
-			})();
+			})(i);
 		}
 	};
 })(jQuery);
